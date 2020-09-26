@@ -87,16 +87,14 @@ class Mysql(Engine):
         self.user = user
         self.password = password
         super(Mysql, self).__init__()
-
+    #Validado
     def connect(self):
-        #self.validate_not_connected()
-
         self.connection = _mysql.connect(
             port=self.port,
-            host=self.host, 
-            database=self.database,
-            user=self.user, 
-            password=self.password
+            host=self.host,
+            db=self.database,
+            user=self.user,
+            passwd=self.password
         )
         return self.connection
     
@@ -105,8 +103,9 @@ class Mysql(Engine):
         self.connection.close()
         return True
     
-    def execute(self, query):
+    def execute(self,query):
         self.validate_connected()
+        print(self.validate_connected())
         cursor = self.connection.cursor()
         cursor.execute(query)
         return cursor
