@@ -1,4 +1,5 @@
 import psycopg2
+from MySQLdb import _mysql
 
 
 class Engine:
@@ -41,6 +42,56 @@ class Postgres(Engine):
         #self.validate_not_connected()
 
         self.connection = psycopg2.connect(
+            port=self.port,
+            host=self.host, 
+            database=self.database,
+            user=self.user, 
+            password=self.password
+        )
+        return self.connection
+    
+    def close(self):
+        self.validate_connected()
+        self.connection.close()
+        return True
+    
+    def execute(self, query):
+        self.validate_connected()
+        cursor = self.connection.cursor()
+        cursor.execute(query)
+        return cursor
+
+    def fetch(self, query):
+        self.connect()
+        cursor = self.execute(query)
+        result = cursor.fetchall()
+        self.close()
+        return result
+    
+    def commit(self):
+        self.validate_connected()
+        self.connection.commit()
+        self.close()
+        return True
+
+    def save(self, query):
+        self.connect()
+        self.execute(query)
+        return self.commit()
+
+class Mysql(Engine):
+    def __init__(self, port, host, database, user, password):
+        self.port = port
+        self.host = host
+        self.database = database
+        self.user = user
+        self.password = password
+        super(Mysql, self).__init__()
+
+    def connect(self):
+        #self.validate_not_connected()
+
+        self.connection = _mysql.connect(
             port=self.port,
             host=self.host, 
             database=self.database,
