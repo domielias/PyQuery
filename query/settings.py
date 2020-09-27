@@ -1,7 +1,9 @@
-from .engine import Postgres
+from query.engine import Postgres
+from query.engine import Mysql
 
 ENGINES = {
-    'postgres': Postgres
+    'postgres': Postgres,
+    'mysql': Mysql
 }
 
 WHERE_SPECIAL_ARGUMENTS = {
